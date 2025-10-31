@@ -1,0 +1,11 @@
+export { default as bankIcon } from './bank.svg';
+export { default as connectedIcon } from './Connected.svg';
+export { default as verifyIcon } from './verify.svg';
+export { default as walletIcon } from './wallet.svg';
+export { default as heroEcommerce } from './hero-ecommerce.jpg';
+export { default as productHeadphones } from './product-headphones.jpg';
+export { default as productHandbag } from './product-handbag.jpg';
+export { default as productWatch } from './product-watch.jpg';
+export { default as slingBagCheckeredGray } from './product-handbag2.jpg';
+export { default as headphonesOverEarBlack } from './product-headphones2.jpg';
+export { default as sportWatchGreenBand } from './product-sportwatch.jpg';

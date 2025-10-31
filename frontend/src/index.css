@@ -1,0 +1,248 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ecommerce Design System - Premium Shopping Experience */
+
+@layer base {
+    :root {
+        /* Core Background & Content */
+        --background: 0 0% 100%;
+        --foreground: 215 25% 15%;
+
+        /* Cards & Surfaces */
+        --card: 0 0% 100%;
+        --card-foreground: 215 25% 15%;
+
+        /* Popover & Overlays */
+        --popover: 0 0% 100%;
+        --popover-foreground: 215 25% 15%;
+
+        /* Brand Colors - Sophisticated Ecommerce */
+        --primary: 215 25% 15%;
+        --primary-foreground: 0 0% 100%;
+        --primary-glow: 215 25% 25%;
+
+        /* Secondary - Warm Accent */
+        --secondary: 20 85% 60%;
+        --secondary-foreground: 0 0% 100%;
+        --secondary-glow: 20 85% 70%;
+
+        /* Muted & Subtle */
+        --muted: 210 40% 96%;
+        --muted-foreground: 215 16% 50%;
+
+        /* Accent - Success Green */
+        --accent: 142 76% 36%;
+        --accent-foreground: 0 0% 100%;
+
+        /* Destructive */
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 100%;
+
+        /* Borders & Inputs */
+        --border: 214 32% 91%;
+        --input: 214 32% 91%;
+        --ring: 215 25% 15%;
+
+        /* Design System Extensions */
+        --radius: 0.75rem;
+
+        /* Gradients */
+        --gradient-primary: linear-gradient(
+            135deg,
+            hsl(var(--primary)),
+            hsl(var(--primary-glow))
+        );
+        --gradient-secondary: linear-gradient(
+            135deg,
+            hsl(var(--secondary)),
+            hsl(var(--secondary-glow))
+        );
+        --gradient-hero: linear-gradient(
+            135deg,
+            hsl(var(--primary)) 0%,
+            hsl(var(--secondary)) 100%
+        );
+        --gradient-card: linear-gradient(
+            145deg,
+            hsl(0 0% 100%) 0%,
+            hsl(210 40% 98%) 100%
+        );
+
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 hsl(var(--primary) / 0.05);
+        --shadow-md: 0 4px 6px -1px hsl(var(--primary) / 0.1);
+        --shadow-lg: 0 10px 15px -3px hsl(var(--primary) / 0.1);
+        --shadow-product: 0 8px 30px -12px hsl(var(--primary) / 0.15);
+        --shadow-cart: 0 20px 25px -5px hsl(var(--primary) / 0.1);
+
+        /* Animations */
+        --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+        --sidebar-background: 0 0% 98%;
+
+        --sidebar-foreground: 240 5.3% 26.1%;
+
+        --sidebar-primary: 240 5.9% 10%;
+
+        --sidebar-primary-foreground: 0 0% 98%;
+
+        --sidebar-accent: 240 4.8% 95.9%;
+
+        --sidebar-accent-foreground: 240 5.9% 10%;
+
+        --sidebar-border: 220 13% 91%;
+
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+
+    .dark {
+        --background: 222.2 84% 4.9%;
+        --foreground: 210 40% 98%;
+
+        --card: 222.2 84% 4.9%;
+        --card-foreground: 210 40% 98%;
+
+        --popover: 222.2 84% 4.9%;
+        --popover-foreground: 210 40% 98%;
+
+        --primary: 210 40% 98%;
+        --primary-foreground: 222.2 47.4% 11.2%;
+
+        --secondary: 217.2 32.6% 17.5%;
+        --secondary-foreground: 210 40% 98%;
+
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
+
+        --accent: 217.2 32.6% 17.5%;
+        --accent-foreground: 210 40% 98%;
+
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
+
+        --border: 217.2 32.6% 17.5%;
+        --input: 217.2 32.6% 17.5%;
+        --ring: 212.7 26.8% 83.9%;
+        --sidebar-background: 240 5.9% 10%;
+        --sidebar-foreground: 240 4.8% 95.9%;
+        --sidebar-primary: 224.3 76.3% 48%;
+        --sidebar-primary-foreground: 0 0% 100%;
+        --sidebar-accent: 240 3.7% 15.9%;
+        --sidebar-accent-foreground: 240 4.8% 95.9%;
+        --sidebar-border: 240 3.7% 15.9%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground font-sans antialiased;
+    }
+}
+
+@layer components {
+    /* Product Cards */
+    .product-card {
+        @apply bg-card rounded-lg overflow-hidden transition-all duration-300;
+        box-shadow: var(--shadow-product);
+    }
+
+    .product-card:hover {
+        @apply transform -translate-y-1;
+        box-shadow: var(--shadow-lg);
+    }
+
+    /* Hero Sections */
+    .hero-gradient {
+        background: var(--gradient-hero);
+    }
+
+    /* Shopping Cart */
+    .cart-shadow {
+        box-shadow: var(--shadow-cart);
+    }
+
+    /* Smooth Transitions */
+    .smooth-transition {
+        transition: var(--transition-smooth);
+    }
+
+    .bounce-transition {
+        transition: var(--transition-bounce);
+    }
+
+    /* Gradients */
+    .gradient-primary {
+        background: var(--gradient-primary);
+    }
+
+    .gradient-secondary {
+        background: var(--gradient-secondary);
+    }
+
+    .gradient-card {
+        background: var(--gradient-card);
+    }
+
+    /* Plaid Link Widget Positioning */
+    iframe[src*='plaid.com'],
+    iframe[data-plaid-link],
+    .plaid-modal,
+    [data-testid='plaid-link-modal'] {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 9999 !important;
+        max-width: 100% !important;
+        max-height: 100vh !important;
+    }
+
+    @media (max-width: 768px) {
+        /* Fullscreen Plaid modal on mobile */
+        iframe[src*='plaid.com'],
+        iframe.plaid-link-iframe,
+        .plaid-modal,
+        [data-testid='plaid-link-modal'] {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            transform: none !important;
+            z-index: 999999 !important;
+            background: white !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            display: block !important;
+        }
+
+        /* Force html and body to full height when Plaid is open */
+        html:has(iframe[src*='plaid.com']),
+        body:has(iframe[src*='plaid.com']) {
+            height: 100% !important;
+            overflow: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        body.zkme-widget-open {
+            overflow: hidden !important;
+            background: #0a0a0a !important;
+        }
+
+        body:not(.zkme-widget-open) {
+            overflow: auto !important;
+        }
+    }
+}

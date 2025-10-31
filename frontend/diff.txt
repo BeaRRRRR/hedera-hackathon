@@ -1,0 +1,548 @@
+diff --git a/frontend/src/components/ConnectWalletModal.tsx b/frontend/src/components/ConnectWalletModal.tsx
+index 498b727..9b01123 100644
+--- a/frontend/src/components/ConnectWalletModal.tsx
++++ b/frontend/src/components/ConnectWalletModal.tsx
+@@ -41,6 +41,8 @@ export const ConnectWalletModal: React.FC<ConnectWalletModalProps> = ({
+     onWalletAdded,
+ }) => {
+     const { user } = usePrivy();
++
++    console.log('user', user);
+     const { linkWallet } = useLinkAccount({
+         onSuccess: ({ user: _user }) => {
+             onWalletAdded?.();
+@@ -221,7 +223,8 @@ export const ConnectWalletModal: React.FC<ConnectWalletModalProps> = ({
+                         scrollbarColor: 'rgba(201, 242, 153, 1) transparent',
+                     }}
+                 >
+-                    <style>{`
++                    <style>
++                        {`
+                         .overflow-y-auto::-webkit-scrollbar {
+                             width: 6px;
+                         }
+@@ -263,9 +266,10 @@ export const ConnectWalletModal: React.FC<ConnectWalletModalProps> = ({
+                                                     </div>
+                                                 </div>
+                                                 <div className="text-xs text-white/60 truncate mt-0.5">
+-                                                    {w.address.startsWith('0x')
+-                                                        ? 'Ethereum'
+-                                                        : 'Solana'}
++                                                    Hedera Testnet
++                                                    {/* {w.address.startsWith('0x') */}
++                                                    {/* ? 'Ethereum' */}
++                                                    {/* : 'Solana'} */}
+                                                 </div>
+                                             </div>
+ 
+diff --git a/frontend/src/contexts/PrivyProvider.tsx b/frontend/src/contexts/PrivyProvider.tsx
+index fd713b6..b19c28b 100644
+--- a/frontend/src/contexts/PrivyProvider.tsx
++++ b/frontend/src/contexts/PrivyProvider.tsx
+@@ -1,106 +1,124 @@
+ import React from 'react';
+ import { PrivyProvider as PrivyProviderBase } from '@privy-io/react-auth';
+-import {toSolanaWalletConnectors} from '@privy-io/react-auth/solana';
+-import {createSolanaRpc, createSolanaRpcSubscriptions} from '@solana/kit';
+-
++import { toSolanaWalletConnectors } from '@privy-io/react-auth/solana';
++import { createSolanaRpc, createSolanaRpcSubscriptions } from '@solana/kit';
+ 
+ interface PrivyProviderProps {
+     children: React.ReactNode;
+ }
+ 
++import { defineChain } from 'viem';
++
++const hederaTestnet = defineChain({
++    id: 296, // Hedera testnet CHAINID
++    name: 'Hedera Testnet',
++    network: 'hedera-testnet',
++    nativeCurrency: { name: 'HBAR', symbol: 'HBAR', decimals: 18 },
++    rpcUrls: {
++        default: { http: ['https://testnet.hashio.io/api'] },
++    },
++    blockExplorers: {
++        default: { name: 'HashScan', url: 'https://hashscan.io/testnet' },
++    },
++});
++
+ export const PrivyProvider: React.FC<PrivyProviderProps> = ({ children }) => {
+     return (
+         <PrivyProviderBase
+             appId={import.meta.env.VITE_PRIVY_APP_ID}
+             config={{
+-                embeddedWallets: {
+-                    ethereum: {
+-                        createOnLogin: 'all-users', // Создаем для всех пользователей
+-                    },
+-                },
+-                // Login settings
+-                loginMethods: [
+-                    'wallet',
+-                    'google',
+-                    'twitter',
+-                    'email',
+-                    'passkey',
+-                ],
+-                solana: {
+-                    rpcs: {
+-                        'solana:mainnet': {
+-                            rpc: createSolanaRpc(
+-                                'https://api.mainnet-beta.solana.com'
+-                            ),
+-                            rpcSubscriptions: createSolanaRpcSubscriptions(
+-                                'wss://api.mainnet-beta.solana.com'
+-                            ),
+-                        },
+-                    },
+-                },
+-                externalWallets: {
+-                    solana: {
+-                        connectors: toSolanaWalletConnectors(),
+-                    },
+-                },
+-                appearance: {
+-                    walletChainType: 'ethereum-and-solana',
+-                    showWalletLoginFirst: true,
+-                    theme: 'dark',
+-                },
+-                supportedChains: [
+-                    {
+-                        id: 8453, // Base Mainnet
+-                        name: 'Base',
+-                        network: 'base',
+-                        nativeCurrency: {
+-                            name: 'Ethereum',
+-                            symbol: 'ETH',
+-                            decimals: 18,
+-                        },
+-                        rpcUrls: {
+-                            default: {
+-                                http: ['https://mainnet.base.org'],
+-                            },
+-                            public: {
+-                                http: ['https://mainnet.base.org'],
+-                            },
+-                        },
+-                        blockExplorers: {
+-                            default: {
+-                                name: 'BaseScan',
+-                                url: 'https://basescan.org',
+-                            },
+-                        },
+-                        testnet: false,
+-                    },
+-                    {
+-                        id: 101, // Solana mainnet
+-                        name: 'Solana',
+-                        network: 'solana',
+-                        nativeCurrency: {
+-                            name: 'Solana',
+-                            symbol: 'SOL',
+-                            decimals: 9,
+-                        },
+-                        rpcUrls: {
+-                            default: {
+-                                http: ['https://api.mainnet-beta.solana.com'],
+-                            },
+-                            public: {
+-                                http: ['https://api.mainnet-beta.solana.com'],
+-                            },
+-                        },
+-                        blockExplorers: {
+-                            default: {
+-                                name: 'Solscan',
+-                                url: 'https://solscan.io',
+-                            },
+-                        },
+-                        testnet: false,
+-                    },
+-                ],
++                defaultChain: hederaTestnet,
++                supportedChains: [hederaTestnet],
+             }}
++            // config={{
++            //     embeddedWallets: {
++            //         ethereum: {
++            //             createOnLogin: 'all-users', // Создаем для всех пользователей
++            //         },
++            //     },
++            //     // Login settings
++            //     loginMethods: [
++            //         'wallet',
++            //         'google',
++            //         'twitter',
++            //         'email',
++            //         'passkey',
++            //     ],
++            //     solana: {
++            //         rpcs: {
++            //             'solana:mainnet': {
++            //                 rpc: createSolanaRpc(
++            //                     'https://api.mainnet-beta.solana.com'
++            //                 ),
++            //                 rpcSubscriptions: createSolanaRpcSubscriptions(
++            //                     'wss://api.mainnet-beta.solana.com'
++            //                 ),
++            //             },
++            //         },
++            //     },
++            //     externalWallets: {
++            //         solana: {
++            //             connectors: toSolanaWalletConnectors(),
++            //         },
++            //     },
++            //     appearance: {
++            //         walletChainType: 'ethereum-and-solana',
++            //         showWalletLoginFirst: true,
++            //         theme: 'dark',
++            //     },
++            //     supportedChains: [
++            //         {
++            //             id: 8453, // Base Mainnet
++            //             name: 'Base',
++            //             network: 'base',
++            //             nativeCurrency: {
++            //                 name: 'Ethereum',
++            //                 symbol: 'ETH',
++            //                 decimals: 18,
++            //             },
++            //             rpcUrls: {
++            //                 default: {
++            //                     http: ['https://mainnet.base.org'],
++            //                 },
++            //                 public: {
++            //                     http: ['https://mainnet.base.org'],
++            //                 },
++            //             },
++            //             blockExplorers: {
++            //                 default: {
++            //                     name: 'BaseScan',
++            //                     url: 'https://basescan.org',
++            //                 },
++            //             },
++            //             testnet: false,
++            //         },
++            //         {
++            //             id: 101, // Solana mainnet
++            //             name: 'Solana',
++            //             network: 'solana',
++            //             nativeCurrency: {
++            //                 name: 'Solana',
++            //                 symbol: 'SOL',
++            //                 decimals: 9,
++            //             },
++            //             rpcUrls: {
++            //                 default: {
++            //                     http: ['https://api.mainnet-beta.solana.com'],
++            //                 },
++            //                 public: {
++            //                     http: ['https://api.mainnet-beta.solana.com'],
++            //                 },
++            //             },
++            //             blockExplorers: {
++            //                 default: {
++            //                     name: 'Solscan',
++            //                     url: 'https://solscan.io',
++            //                 },
++            //             },
++            //             testnet: false,
++            //         },
++            // ],
++            // }}
+         >
+             {children}
+         </PrivyProviderBase>
+diff --git a/frontend/src/pages/Checkout.tsx b/frontend/src/pages/Checkout.tsx
+index 876d0e8..535e8d4 100644
+--- a/frontend/src/pages/Checkout.tsx
++++ b/frontend/src/pages/Checkout.tsx
+@@ -70,9 +70,9 @@ export const Checkout = () => {
+     const [isTokenReceived, setIsTokenReceived] = useState(false);
+     const [isPlaidOverlayVisible, setIsPlaidOverlayVisible] = useState(false);
+     const [isZkMeOverlayVisible, setIsZkMeOverlayVisible] = useState(false);
+-    const [userResponse, setUserResponse] = useState({})
++    const [userResponse, setUserResponse] = useState({});
+     const plaidOverlayTimerRef = useRef<number | null>(null);
+-   
++
+     // Флаг: вход выполнен именно через криптокошелёк
+     const [isWalletLogin, setIsWalletLogin] = useState<boolean>(() => {
+         try {
+@@ -104,10 +104,10 @@ export const Checkout = () => {
+             try {
+                 sessionStorage.setItem(
+                     'privy_last_login_type',
+-                    isWallet ? 'wallet' : loginAccount?.type ?? ''
++                    isWallet ? 'wallet' : (loginAccount?.type ?? '')
+                 );
+-            } catch(err) {
+-                console.error(err)
++            } catch (err) {
++                console.error(err);
+             }
+         },
+     });
+@@ -124,46 +124,43 @@ export const Checkout = () => {
+     }, [authenticated]);
+ 
+     // Plaid Link configuration
+-    const onSuccess = React.useCallback(
+-        (public_token: string) => {
+-            // Обмениваем public_token на access_token на сервере
+-            const exchangePublicTokenForAccessToken = async () => {
+-                try {
+-                    const response = await fetch(`/api/set_access_token`, {
+-                        method: 'POST',
+-                        headers: {
+-                            'Content-Type': 'application/json',
+-                            'x-api-key': import.meta.env.VITE_API_KEY,
+-                        },
+-                        body: JSON.stringify({ publicToken: public_token }),
+-                    });
+-                    if (!response.ok) {
+-                        console.error('Failed to exchange public_token');
+-                    }
+-                } catch (e) {
+-                    console.error('Error exchanging public_token:', e);
++    const onSuccess = React.useCallback((public_token: string) => {
++        // Обмениваем public_token на access_token на сервере
++        const exchangePublicTokenForAccessToken = async () => {
++            try {
++                const response = await fetch(`/api/set_access_token`, {
++                    method: 'POST',
++                    headers: {
++                        'Content-Type': 'application/json',
++                        'x-api-key': import.meta.env.VITE_API_KEY,
++                    },
++                    body: JSON.stringify({ publicToken: public_token }),
++                });
++                if (!response.ok) {
++                    console.error('Failed to exchange public_token');
+                 }
+-            };
++            } catch (e) {
++                console.error('Error exchanging public_token:', e);
++            }
++        };
+ 
+-            exchangePublicTokenForAccessToken().finally(() => {
+-                if (plaidOverlayTimerRef.current) {
+-                    clearTimeout(plaidOverlayTimerRef.current);
+-                    plaidOverlayTimerRef.current = null;
+-                }
+-                setIsPlaidOverlayVisible(false);
+-                try {
+-                    // отмечаем, что банк подключен через Plaid
+-                    localStorage.setItem('hasConnectedBank', 'true');
+-                } catch (_e) {
+-                    console.error('Error setting hasConnectedBank:', _e);
+-                }
+-                // после банка всегда открываем 2-ю модалку (кошелёк)
+-                setShowWalletConnectModal(true);
+-                setAfterVerifyFlow(false);
+-            });
+-        },
+-        []
+-    );
++        exchangePublicTokenForAccessToken().finally(() => {
++            if (plaidOverlayTimerRef.current) {
++                clearTimeout(plaidOverlayTimerRef.current);
++                plaidOverlayTimerRef.current = null;
++            }
++            setIsPlaidOverlayVisible(false);
++            try {
++                // отмечаем, что банк подключен через Plaid
++                localStorage.setItem('hasConnectedBank', 'true');
++            } catch (_e) {
++                console.error('Error setting hasConnectedBank:', _e);
++            }
++            // после банка всегда открываем 2-ю модалку (кошелёк)
++            setShowWalletConnectModal(true);
++            setAfterVerifyFlow(false);
++        });
++    }, []);
+ 
+     const onExit = React.useCallback(
+         (err: PlaidLinkError | null, metadata: PlaidLinkOnExitMetadata) => {
+@@ -455,7 +452,7 @@ export const Checkout = () => {
+                 console.log(
+                     '✅ Set hasConnectedWallet = true after real wallet addition'
+                 );
+-            } catch(err) {
++            } catch (err) {
+                 console.error(err);
+             }
+ 
+@@ -640,15 +637,16 @@ export const Checkout = () => {
+                 }
+             }
+ 
+-            // Check that wallet is on the correct network (Base mainnet, chainId: 8453)
+-            if (embeddedWallet.chainId !== '8453') {
++            // Check that wallet is on the correct network (Hedera mainnet, chainId: 296)
++
++            if (embeddedWallet.chainId !== '296') {
+                 try {
+-                    await embeddedWallet.switchChain(8453);
+-                    console.log('Switched to Base mainnet (chainId: 8453)');
++                    await embeddedWallet.switchChain(296);
++                    console.log('Switched to Hedera Testnet (chainId: 296)');
+                 } catch (error) {
+                     console.error('Failed to switch network:', error);
+                     throw new Error(
+-                        'Please switch to Base mainnet to continue.'
++                        'Пожалуйста, переключитесь на Hedera Testnet (chainId 296).'
+                     );
+                 }
+             }
+@@ -659,12 +657,12 @@ export const Checkout = () => {
+                 chainId: embeddedWallet.chainId,
+             });
+ 
+-            // Transaction parameters - можно выбрать USDC или ETH
+-            const useUSDC = false; // Поменяйте на true для USDC
++            // Transaction parameters - using native HBAR on Hedera EVM
++            const useUSDC = false; // На Hedera по умолчанию платим HBAR
+             const recipientAddress =
+-                '0x16b0a6626da8954315cC5f01426a53257000F7Ac';
++                '0x8675a1C67BD6e644155fC88a8E83Ee84A4a8a8f2';
+ 
+-            let transaction:  {
++            let transaction: {
+                 to: string;
+                 value?: string;
+                 data?: string;
+@@ -672,28 +670,16 @@ export const Checkout = () => {
+             };
+ 
+             if (useUSDC) {
+-                // USDC payment
+-                const paymentAmount = '1.00'; // $1 USDC
+-                const usdcContractAddress =
+-                    '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
+-
+-                transaction = {
+-                    to: usdcContractAddress,
+-                    data: createUSDCTransferData(
+-                        recipientAddress,
+-                        paymentAmount
+-                    ),
+-                    value: '0x0',
+-                    chainId: 8453,
+-                };
++                // If needed, you can implement payment with token on Hedera
++                throw new Error('Оплата токеном отключена. Используйте HBAR.');
+             } else {
+-                // ETH payment (примерно $1 worth of ETH)
+-                const ethAmount = '0.00003'; // ~$1 worth of ETH (adjust based on current price)
++                // Payment with HBAR (native asset on Hedera EVM)
++                const hbarAmount = '4';
+ 
+                 transaction = {
+                     to: recipientAddress,
+-                    value: `0x${(parseFloat(ethAmount) * 1e18).toString(16)}`, // Convert to wei
+-                    chainId: 8453,
++                    value: `0x${(parseFloat(hbarAmount) * 1e18).toString(16)}`, // Wei-эквивалент для EVM на Hedera
++                    chainId: 296,
+                 };
+             }
+ 
+@@ -708,7 +694,7 @@ export const Checkout = () => {
+                         '0x70a08231' +
+                         embeddedWallet.address.slice(2).padStart(64, '0');
+ 
+-                    const provider  = await embeddedWallet.getEthereumProvider()
++                    const provider = await embeddedWallet.getEthereumProvider();
+ 
+                     // const result = await embeddedWallet.request({
+                     //     method: 'eth_call',
+@@ -757,7 +743,7 @@ export const Checkout = () => {
+             }
+ 
+             console.log(
+-                `Sending ${useUSDC ? 'USDC' : 'ETH'} transaction:`,
++                `Sending ${useUSDC ? 'TOKEN' : 'HBAR'} transaction:`,
+                 transaction
+             );
+ 
+@@ -766,16 +752,12 @@ export const Checkout = () => {
+                 uiOptions: {
+                     showWalletUIs: true,
+                     description: `Send ${
+-                        useUSDC ? '1.00 USDC' : '0.00003 ETH'
+-                    } to complete your BNPL order`,
++                        useUSDC ? 'token' : '4 HBAR'
++                    } to complete BNPL order`,
+                     buttonText: 'Approve Payment',
+                     transactionInfo: {
+                         title: 'BNPL Payment Transaction',
+                         action: 'Buy with BNPL',
+-                        contractInfo: {
+-                            name: 'USDC Token',
+-                            url: 'https://basescan.org/token/0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+-                        },
+                     },
+                     successHeader: 'Payment Complete!',
+                     successDescription:
+@@ -784,6 +766,9 @@ export const Checkout = () => {
+                 },
+             });
+             console.log('Transaction sent, hash:', txHash);
++            console.log(
++                `HashScan (testnet) link: https://hashscan.io/testnet/tx/${txHash}`
++            );
+ 
+             // Save order information after successful payment
+             orderDispatch({
+@@ -833,8 +818,11 @@ export const Checkout = () => {
+                 console.log('Setting showWalletModal to true');
+             } else if (errorMessage.includes('user rejected')) {
+                 userMessage = 'Transaction was cancelled. Please try again.';
+-            } else if (errorMessage.includes('Please switch to Base mainnet')) {
+-                userMessage = 'Please switch to Base mainnet to continue.';
++            } else if (
++                errorMessage.includes('Hedera Testnet') ||
++                errorMessage.includes('296')
++            ) {
++                userMessage = 'Please switch to Hedera Testnet (chainId 296).';
+             }
+ 
+             alert(userMessage);
+@@ -1075,8 +1063,7 @@ export const Checkout = () => {
+                                                                         interest:
+                                                                             'Free',
+                                                                         total: total,
+-                                                                        isInterestFree:
+-                                                                            true,
++                                                                        isInterestFree: true,
+                                                                     };
+                                                                 await handlePaymentSelection(
+                                                                     selectedOption
+@@ -1309,10 +1296,10 @@ export const Checkout = () => {
+                                 {!ready
+                                     ? 'Loading...'
+                                     : !authenticated
+-                                    ? 'Login to Complete Order'
+-                                    : selectedPaymentMethod === 'bnpl'
+-                                    ? 'Checkout with Yumi'
+-                                    : 'Complete Order'}
++                                      ? 'Login to Complete Order'
++                                      : selectedPaymentMethod === 'bnpl'
++                                        ? 'Checkout with Yumi'
++                                        : 'Complete Order'}
+                                 {/* Debug info */}
+                                 {process.env.NODE_ENV === 'development' && (
+                                     <span className="text-xs text-gray-500 ml-2">
+@@ -1475,8 +1462,8 @@ export const Checkout = () => {
+                     try {
+                         localStorage.setItem('hasConnectedWallet', 'true');
+                         console.log('✅ Set hasConnectedWallet = true');
+-                    } catch(err) {
+-                        console.error(err)
++                    } catch (err) {
++                        console.error(err);
+                     }
+ 
+                     // Логика: банк подключен → закрываем модалку и открываем апрув, банк НЕ подключен → открываем 3-ю модалку
